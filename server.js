@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const Entrante = require('./modelos/Entrante');
@@ -11,17 +12,14 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Accede a la variable de entorno
 const dbUrl = process.env.DATABASE_URL;
 
-// Conéctate a la base de datos
-mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Conexión a la base de datos exitosa');
-    })
-    .catch(err => {
-        console.error('Error al conectar a la base de datos:', err);
-    });
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => console.log('Conexión a la base de datos exitosa'))
+.catch(err => console.error('Error al conectar a la base de datos:', err));
 
 app.get('/entrantes', async (req, res) => {
     try {
