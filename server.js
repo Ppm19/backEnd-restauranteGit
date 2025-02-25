@@ -1,14 +1,17 @@
 require('dotenv').config();
-const express = require('express');
 const mongoose = require('mongoose');
 const Entrante = require('./modelos/Entrante');
 const Carnes = require('./modelos/Carnes');
 const Pasta = require('./modelos/Pasta');
 const Postres = require('./modelos/Postres');
 const Bebidas = require('./modelos/Bebidas');
-
+const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+
 
 app.use(express.json());
 
