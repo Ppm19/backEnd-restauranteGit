@@ -214,6 +214,21 @@ app.delete('/eliminar-reserva/:id', async (req, res) => {
     }
 });
 
+app.delete('/eliminar-pedido/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pedidoEliminado = await Pedidos.findByIdAndDelete(id);
+
+        if (!pedidoEliminado) {
+            return res.status(404).json({ message: 'Pedido no encontrado' });
+        }
+
+        res.status(200).json({ message: 'Pedido eliminado con éxito' });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
