@@ -5,6 +5,7 @@ const Carnes = require('./modelos/Carnes');
 const Pasta = require('./modelos/Pasta');
 const Postres = require('./modelos/Postres');
 const Bebidas = require('./modelos/Bebidas');
+const Reservas = require('./modelos/reservas');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -126,6 +127,62 @@ app.get('/bebidas/:id', async (req, res) => {
         res.json(item);
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+});
+
+app.get('/reservas', async (req, res) => {
+    try {
+        const items = await Reservas.find();
+        res.json(items);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+app.get('/reservas/:id', async (req, res) => {
+    try {
+        const item = await Reservas.findById(req.params.id);
+        if (!item) {
+            return res.status(404).json({ message: 'Item no encontrado' });
+        }
+        res.json(item);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Crear una nueva reserva
+app.post('/crear-reserva', async (req, res) => {
+    try {
+        const reserva = new Reservas({
+            nombre: req.body.nombre,
+            fecha: req.body.fecha,
+            hora: req.body.hora,
+            ncomensales: req.body.ncomensales,
+            estadoReserva: req.body.estadoReserva || 'pendiente',
+        });
+
+        const nuevaReserva = await reserva.save();
+
+        res.status(201).json(nuevaReserva);
+    } catch (err) {
+        // Manejar errores
+        res.status(400).json({ message: err.message });
+    }
+});
+
+app.delete('/eliminar-reserva/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const reservaEliminada = await Reservas.findByIdAndDelete(id);
+
+        if (!reservaEliminada) {
+            return res.status(404).json({ message: 'Reserva no encontrada' });
+        }
+
+        res.status(200).json({ message: 'Reserva eliminada con éxito' });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
     }
 });
 
