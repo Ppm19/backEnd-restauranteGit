@@ -6,6 +6,7 @@ const Pasta = require('./modelos/Pasta');
 const Postres = require('./modelos/Postres');
 const Bebidas = require('./modelos/Bebidas');
 const Reservas = require('./modelos/reservas');
+const Pedidos = require('./modelos/Pedidos');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -151,6 +152,34 @@ app.get('/reservas/:id', async (req, res) => {
     }
 });
 
+app.post('/realizar-pedido', async (req, res) => {
+    try {
+        const pedido = new Pedidos({
+            nombre: req.body.nombre,
+            platos: req.body.platos,
+            precio: req.body.precio,
+            estadoReserva: req.body.estadoReserva || 'pendiente',
+            direccion: req.body.direccion,
+            telefono: req.body.telefono,
+        });
+
+            const nuevoPedido = await pedido.save();
+
+        res.status(201).json(nuevoPedido);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+app.get('/pedidos', async (req, res) => {
+    try {
+        const items = await Pedidos.find();
+        res.json(items);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}); 
+
 // Crear una nueva reserva
 app.post('/crear-reserva', async (req, res) => {
     try {
@@ -166,7 +195,6 @@ app.post('/crear-reserva', async (req, res) => {
 
         res.status(201).json(nuevaReserva);
     } catch (err) {
-        // Manejar errores
         res.status(400).json({ message: err.message });
     }
 });
